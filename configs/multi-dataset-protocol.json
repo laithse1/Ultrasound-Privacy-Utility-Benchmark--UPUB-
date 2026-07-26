@@ -1,0 +1,17 @@
+{
+  "name": "upub-multi-dataset-v1",
+  "datasets": [
+    {"name": "BUS-BRA", "role": "development", "manifest": "artifacts/busbra-manifest.json"},
+    {"name": "BUSI", "role": "external_breast_validation", "manifest": "artifacts/busi-manifest.json"},
+    {"name": "BUS-UCLM", "role": "external_breast_validation", "manifest": "artifacts/bus-uclm-manifest.json"},
+    {"name": "TN3K", "role": "cross_anatomy_stress_test", "manifest": "artifacts/tn3k-manifest.json"}
+  ],
+  "architectures": ["unet", "attention_unet", "aau_net"],
+  "seeds": [7, 17, 27],
+  "image_size": 128,
+  "loss": "dicece",
+  "augmentation": true,
+  "selection_rule": "best_validation_dice",
+  "test_lock": "evaluate only after validation checkpoint selection",
+  "report_patient_level_bootstrap": true
+}

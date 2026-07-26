@@ -1,0 +1,6 @@
+.viewer-launchbar{display:flex;justify-content:space-between;align-items:center;gap:20px;background:#102a38;border:1px solid #275667;border-radius:12px;padding:12px 16px;margin-bottom:18px;color:#a9c2cb;font-size:11px}
+.viewer-launchbar strong{display:block;color:#e0f4f3;font-size:12px;margin-bottom:3px}
+.viewer-launchbar span{color:#7796a3}
+.viewer-link{background:#e68468;color:#1b2028;text-decoration:none;font-size:11px;font-weight:800;border-radius:7px;padding:9px 12px;white-space:nowrap}
+.viewer-link span{color:inherit;margin-left:8px}
+@media(max-width:650px){.viewer-launchbar{align-items:flex-start;flex-direction:column}.viewer-link{width:100%;text-align:center}}

@@ -1,0 +1,9 @@
+.ready-tag,.viewer-status.ready{background:#16443f!important;color:#6de0c5!important}
+.warning-tag,.viewer-status.manifest{background:#4b3c2e!important;color:#f0bd7d!important}
+.viewer-note{border-radius:7px;padding:9px 10px;margin:10px 0 17px;font-size:10px;line-height:1.45}
+.viewer-note.ready{background:#123c3b;color:#91ddd1;border:1px solid #266c66}
+.viewer-note.warning{background:#3f3028;color:#f0bd7d;border:1px solid #765340}
+.viewer-status{border-radius:5px;padding:5px 7px;font-size:10px;white-space:nowrap}
+.form-section-title{margin:14px 0 13px;border-top:1px solid #193a49;padding-top:17px}
+.step-label{color:#638895;font-size:10px;font-weight:600}
+.viewer-actions{display:flex;gap:8px;align-items:center;margin:10px 0 2px}.viewer-actions .viewer-link{display:inline-block;font-size:11px}.viewer-actions .ghost{padding:8px 11px}

@@ -1,0 +1,42 @@
+.venv/
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+.env
+artifacts/
+data/*
+models/
+reports/*
+papers/*
+paper/*
+
+# Keep the paper source, figures, PDF, and DOCX deliverables versioned;
+# exclude only the local MiKTeX cache and transient TeX build files.
+paper/outputs/miktex-data/
+paper/outputs/miktex-config/
+paper/ieee/paper/
+
+# Keep the public manuscript, documentation, configs, and dataset adapters
+# versioned. Large/private source collections remain ignored above.
+paper/outputs/*.aux
+paper/outputs/*.log
+paper/outputs/*.bbl
+paper/outputs/*.blg
+paper/outputs/*.out
+paper/outputs/*.aux
+paper/outputs/*.bbl
+paper/outputs/*.blg
+paper/outputs/*.log
+paper/outputs/miktex-data/
+paper/outputs/miktex-config/
+paper/ieee/*.aux
+paper/ieee/*.blg
+paper/ieee/*.log
+
+# Local editor/workspace state.
+.vscode/

@@ -1,0 +1,20 @@
+{
+  "name": "busbra-locked-comparison-v1",
+  "dataset": "BUS-BRA",
+  "dataset_version": "zenodo-8231412-v1.0",
+  "validation_fold": 4,
+  "test_fold": 5,
+  "train_folds": [1, 2, 3],
+  "models": ["unet", "aau_net"],
+  "epochs": 3,
+  "image_size": 128,
+  "batch_size": 32,
+  "limit_train": 300,
+  "limit_validation": 100,
+  "limit_test": 100,
+  "loss": "dicece",
+  "augmentation": true,
+  "seed": 7,
+  "selection_rule": "best_validation_dice",
+  "test_lock": "test is evaluated only after validation checkpoint selection"
+}

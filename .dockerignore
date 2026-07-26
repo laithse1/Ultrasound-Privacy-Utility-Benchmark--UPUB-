@@ -1,0 +1,13 @@
+.git
+.venv
+__pycache__
+.pytest_cache
+.ruff_cache
+artifacts
+data
+models
+reports
+tests
+node_modules
+console/dist
+paper/outputs/miktex-data

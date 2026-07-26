@@ -1,0 +1,26 @@
+# Enterprise edge example. Replace idp-gateway and certificate paths with the
+# organization-approved identity gateway and certificate authority mount.
+{$UPUB_DOMAIN} {
+    encode gzip
+
+    tls /certs/upub.crt /certs/upub.key
+
+    forward_auth idp-gateway:4180 {
+        uri /oauth2/auth
+        copy_headers X-Auth-Request-User X-Auth-Request-Email X-Auth-Request-Groups
+    }
+
+    @api path /v1/* /healthz /readyz /openapi.json /docs /docs/*
+    handle @api {
+        reverse_proxy api:8000
+    }
+
+    handle /dicom-web/* {
+        reverse_proxy orthanc:8042
+    }
+
+    log {
+        output stdout
+        format json
+    }
+}

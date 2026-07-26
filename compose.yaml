@@ -1,0 +1,99 @@
+name: ultrasound-privacy-utility-benchmark
+
+services:
+  console:
+    profiles: [console]
+    build: ./console
+    ports:
+      - "5173:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    profiles: [core, console]
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      UPUB_ENV: development
+      UPUB_ARTIFACT_ROOT: /app/artifacts/runtime
+      # Set UPUB_API_KEY in a deployment secret for shared use; unset keeps
+      # local development frictionless.
+      UPUB_API_KEY: ""
+      UPUB_AUDIT_LOG: /app/artifacts/runtime/audit.jsonl
+      UPUB_ORTHANC_URL: http://orthanc:8042
+    volumes:
+      - upub-artifacts:/app/artifacts/runtime
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  worker:
+    profiles: [core, ai]
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    command: ["python", "-m", "us_privbench.worker.main"]
+    environment:
+      UPUB_ARTIFACT_ROOT: /app/artifacts/runtime
+      UPUB_WORKER_INTERVAL_SECONDS: "5"
+    depends_on:
+      api:
+        condition: service_healthy
+    volumes:
+      - upub-artifacts:/app/artifacts/runtime
+
+  ohif:
+    profiles: [viewer]
+    # Pin the current stable OHIF application image for reproducibility.
+    image: ohif/app:v3.12.7
+    ports:
+      - "3000:80"
+    depends_on:
+      orthanc:
+        condition: service_started
+    volumes:
+      - ./viewer/app-config.js:/usr/share/nginx/html/app-config.js:ro
+      - ./viewer/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    # The viewer remains an upstream container. UPUB supplies configuration;
+    # it does not vendor or fork the OHIF source tree.
+
+  orthanc:
+    profiles: [viewer]
+    image: orthancteam/orthanc:latest
+    ports:
+      - "8042:8042"
+      - "4242:4242"
+    environment:
+      ORTHANC__DICOM_WEB__ENABLE: "true"
+      ORTHANC__DICOM_WEB__ROOT: "/dicom-web/"
+      ORTHANC__AUTHENTICATION_ENABLED: "false"
+    volumes:
+      - orthanc-storage:/var/lib/orthanc/db
+
+  ollama:
+    profiles: [assistant]
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+
+  ocr:
+    profiles: [ocr]
+    build:
+      context: .
+      dockerfile: Dockerfile.ocr
+    environment:
+      UPUB_ARTIFACT_ROOT: /app/artifacts/runtime
+    volumes:
+      - upub-artifacts:/app/artifacts/runtime
+      - ./artifacts:/app/artifacts
+
+volumes:
+  ollama-models:
+  orthanc-storage:
+  upub-artifacts:

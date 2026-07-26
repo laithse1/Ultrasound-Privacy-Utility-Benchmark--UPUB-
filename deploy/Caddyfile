@@ -1,0 +1,18 @@
+{$UPUB_DOMAIN} {
+    encode gzip
+
+    @api path /v1/* /healthz /readyz /openapi.json /docs /docs/*
+    handle @api {
+        reverse_proxy api:8000
+    }
+
+    handle /dicom-web/* {
+        reverse_proxy orthanc:8042
+    }
+
+    respond /healthz 200
+    log {
+        output stdout
+        format json
+    }
+}

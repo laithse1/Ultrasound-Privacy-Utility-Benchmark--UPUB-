@@ -1,0 +1,59 @@
+name: upub-production
+
+services:
+  api:
+    extends:
+      file: compose.yaml
+      service: api
+    profiles: [production]
+    environment:
+      UPUB_ENV: production
+      UPUB_API_KEY: ${UPUB_API_KEY:?Set UPUB_API_KEY in the deployment environment}
+      UPUB_AUDIT_LOG: /app/artifacts/runtime/audit.jsonl
+    ports: !reset []
+    restart: unless-stopped
+
+  worker:
+    extends:
+      file: compose.yaml
+      service: worker
+    profiles: [production]
+    restart: unless-stopped
+
+  orthanc:
+    image: orthancteam/orthanc@sha256:99082b87c96d56e57472d703ad799b779da7aa35aedac830d58cce646a43643f
+    profiles: [production]
+    environment:
+      ORTHANC__DICOM_WEB__ENABLE: "true"
+      ORTHANC__DICOM_WEB__ROOT: "/dicom-web/"
+      ORTHANC__AUTHENTICATION_ENABLED: "true"
+      ORTHANC__REGISTERED_USERS: '{"upub":"${ORTHANC_PASSWORD:?Set ORTHANC_PASSWORD in the deployment environment}"}'
+    expose:
+      - "8042"
+    volumes:
+      - orthanc-storage:/var/lib/orthanc/db
+    restart: unless-stopped
+
+  caddy:
+    image: caddy@sha256:c3d7ee5d2b11f9dc54f947f68a734c84e9c9666c92c88a7f30b9cba5da182adb
+    profiles: [production]
+    depends_on:
+      api:
+        condition: service_healthy
+      orthanc:
+        condition: service_started
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      UPUB_DOMAIN: ${UPUB_DOMAIN:-localhost}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+
+volumes:
+  orthanc-storage:
+  caddy-data:
+  caddy-config:

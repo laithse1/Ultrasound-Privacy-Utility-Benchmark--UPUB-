@@ -1,0 +1,17 @@
+FROM python:3.11-slim-bookworm@sha256:b18992999dbe963a45a8a4da40ac2b1975be1a776d939d098c647482bcad5cba
+
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tesseract-ocr=5.3.0-2 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements-ocr.txt requirements-api.txt ./
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements-ocr.txt
+COPY pyproject.toml README.md ./
+COPY src ./src
+COPY scripts ./scripts
+RUN pip install --no-cache-dir --no-deps .
+
+CMD ["python", "scripts/run_synthetic_case.py", "--output", "/app/artifacts/ocr-smoke", "--ocr"]
