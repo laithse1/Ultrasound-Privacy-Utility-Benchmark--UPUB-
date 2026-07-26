@@ -5,7 +5,7 @@ UPUB is a privacy–utility benchmark and local review workbench for ultrasound 
 The project studies whether synthetic PHI can be injected into ultrasound DICOM studies, removed by candidate de-identification pipelines, and evaluated for both privacy success and downstream segmentation utility—without requiring real patient data.
 
 <p align="center">
-  <img src="paper/figures/upub-hero.png" alt="Privacy-preserving ultrasound AI with segmentation and de-identification" width="100%" />
+  <img src="console\UI\upub-hero.png" alt="Privacy-preserving ultrasound AI with segmentation and de-identification" width="100%" />
 </p>
 
 <p align="center">
